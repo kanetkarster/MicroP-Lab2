@@ -53,33 +53,41 @@ int led_setup()
 /*!
 	
  */
-int blink_leds()
+uint32_t blink_leds()
 {
-	if(get_temperature(0) > _EMERGENCY_TEMP) {
-		GPIO_SetBits(GPIOD, GPIO_Pin_12);
-		for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+	uint32_t cnt = 0;
+	while (1)
+	{
+		if(get_temperature(0) > _EMERGENCY_TEMP) {
+			GPIO_SetBits(GPIOD, GPIO_Pin_12);
+			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+			cnt++;
+		}
+		else return cnt;
+		
+		if(get_temperature(0) > _EMERGENCY_TEMP) {
+			GPIO_SetBits(GPIOD, GPIO_Pin_13);
+			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			GPIO_ResetBits(GPIOD, GPIO_Pin_13);
+			cnt++;
+		}
+		else return cnt;
+		
+		if(get_temperature(0) > _EMERGENCY_TEMP) {
+			GPIO_SetBits(GPIOD, GPIO_Pin_14);
+			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+			cnt++;
+		}
+		else return cnt;
+		
+		if(get_temperature(1) > _EMERGENCY_TEMP) {
+			GPIO_SetBits(GPIOD, GPIO_Pin_15);
+			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			GPIO_ResetBits(GPIOD, GPIO_Pin_15);
+			cnt++;
+		}
+		return cnt;
 	}
-	else return 0;
-	
-	if(get_temperature(0) > _EMERGENCY_TEMP) {
-		GPIO_SetBits(GPIOD, GPIO_Pin_13);
-		for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
-	}
-	else return 1;
-	
-	if(get_temperature(0) > _EMERGENCY_TEMP) {
-		GPIO_SetBits(GPIOD, GPIO_Pin_14);
-		for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-	}
-	else return 2;
-	
-	if(get_temperature(1) > _EMERGENCY_TEMP) {
-		GPIO_SetBits(GPIOD, GPIO_Pin_15);
-		for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-	}
-	return 3;
 }

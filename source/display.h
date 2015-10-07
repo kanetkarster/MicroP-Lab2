@@ -20,8 +20,8 @@ int display_setup(void);
 int led_setup(void);
 
 /*!
-	rotates through the four LEDS.
+	rotates through the four LEDS, while the temperature is too high
 	
-	@return 0 on success, negative number on failure
+	@return number of cycles that the board was overheating
  */
-int blink_leds(void);
+uint32_t blink_leds(void);
