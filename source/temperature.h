@@ -1,20 +1,19 @@
+// temperature.h
+
+float get_temperature(int HIGH);
+
 /*!
 	Sets up the Temperature Sensor and ADC using system calls.
 	
 	It is connected to Pin ADC1_IN16
  */
-int temperature_setup();
-
-/*!
-	Interupt handler for updating the temperature reading
- */
-void SysTick_Handler();
+int temperature_setup(void);
 
 /*!
 	Filters temperature reading for noise
 	TODO
  */
-int filter();
+int filter(void);
 
 /*!
 	Converts a voltage to Degrees Celcius
