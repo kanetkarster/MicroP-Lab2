@@ -3,6 +3,24 @@
 #include "stm32f4xx.h"                  					// Device header
 #include "stm32f4xx_conf.h"
 #include "stm32f4xx.h"
+#include <stdint.h>
+
+#define BUFF_SIZE 10
+
+
+typedef struct{
+	float buffer[BUFF_SIZE];
+	int replace;
+	float avg;
+	float sum;
+}FilterBuffer;
+
+FilterBuffer new_filter;
+
+
+
+int voltage_to_celcius(uint16_t voltage, float* ouput);
+int filter(FilterBuffer *inout, float temp);
 
 int temperature_setup() 
 {
@@ -28,9 +46,13 @@ int temperature_setup()
 	
 	ADC_TempSensorVrefintCmd(ENABLE);											//wake up desired sensor (temp)
 	ADC_Cmd(ADC1, ENABLE);																//turn on the ADC1 peripheral
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 1, ADC_SampleTime_480Cycles);	//Configures ADC1_channel 16 which is the tempature sensor
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_480Cycles);	//Configures ADC1_channel 16 which is the tempature sensor
 	//ADC_RegularChannelConfig(ADC1, , 1, ADC_SampleTime_480Cycles);
 	ADC_Init(ADC1, &adc_init_s);													//initialize ADC1
+	
+
+	new_filter.avg = 0, new_filter.replace = 0, new_filter.sum = 0;
+	
 	return 0;
 }
 
@@ -43,8 +65,9 @@ float get_temperature()
 
 	uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
 	float out_temp;
-	c = voltage_to_celcius(temp_mV, &out_temp);
-	return out_temp;
+	int c = voltage_to_celcius(temp_mV, &out_temp);
+	int s = filter(&new_filter, out_temp);
+	return new_filter.avg;
 }
 
 /*!
@@ -53,11 +76,42 @@ float get_temperature()
 	@param temp output temperature in Celcius
 	@return 0 if successful, -1 on failure
  */
-int voltage_to_celcius(uint16_t voltage, float* ouput)
+int voltage_to_celcius(uint16_t voltage, float* output)
 {
-	//scaling factor .000732 ~ 760/1038
+	printf("voltage = %hu\n", voltage);
+//	//scaling factor .732 ~ 760/1038
+//	float scaling_f = .732f; 	//mV/mV
+//	printf("scaling_f = %f\n", scaling_f);
+//	float	V_25 = 760.0f;					//mV
+//	printf("V_25 = %f\n", V_25);
+//	float avg_slope	 = 2.5f;		//mV/degC
+//	printf("avg_slope = %f\n", avg_slope);
+//	float val = (scaling_f*(float)(voltage) - V_25)/avg_slope + 25.0f;
+//	printf("val = %f\n", val);
 	
+	float max = 4095.0f;
+	printf("max = %f\n", max);
+	float val2 = ((float)(voltage)/max) *3.0f;
+	printf("val2 = %f\n", val2);
+	float val = (val2*1000.0f - 760.0f)/2.5f + 25.0f;
 	
-	
+	*output = val;
+	printf("output = %f\n", *(output));
+
 	return 0;
 }
+
+/*!
+	Filters temperature reading for noise
+	@TODO
+ */
+int filter(FilterBuffer *inout, float temp)
+{
+	inout->sum -= inout->buffer[inout->replace % BUFF_SIZE];
+	inout->sum += (inout->buffer[inout->replace % BUFF_SIZE] = temp);
+	inout->avg = inout->replace++ < BUFF_SIZE 
+											? inout->sum/inout->replace 
+											: inout->sum/BUFF_SIZE;
+	return 0;
+}
+

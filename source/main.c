@@ -11,7 +11,7 @@
  int main(){
 	temperature_setup();
 	while(1){
-		printf("temp = %f\n", get_temperature());
+ 		printf("temp = %f\n", get_temperature());
 	}
 	
 	return 0;

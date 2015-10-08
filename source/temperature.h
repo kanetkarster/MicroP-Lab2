@@ -14,10 +14,5 @@ int temperature_setup(void);
 
 float get_temperature(void);
 
-/*!
-	Filters temperature reading for noise
-	@TODO
- */
-int filter(void);
 
 
