@@ -15,8 +15,7 @@ int main()
 {
 	// temperature_setup();
 	//display_setup();
-	led_setup();
-	printf("hello world");
+	display_setup();
 	SysTick_Config(SystemCoreClock / 50);
 	while(1)
 	{

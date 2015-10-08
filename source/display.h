@@ -15,11 +15,6 @@ int display_setup(void);
  int show_temperature(float temperature);
 
 /*!
-	Sets up LED using system calls
- */
-int led_setup(void);
-
-/*!
 	rotates through the four LEDS, while the temperature is too high
 	
 	@return number of cycles that the board was overheating
