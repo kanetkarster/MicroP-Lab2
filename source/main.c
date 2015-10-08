@@ -14,15 +14,14 @@ uint32_t cnt = 0;
 int main()
 {
 	// temperature_setup();
-	//display_setup();
 	display_setup();
 	SysTick_Config(SystemCoreClock / 50);
 	while(1)
 	{
 		while (!ticks);
 		ticks = 0;
-		//show_temperature(40);
-		blink_leds();
+		show_temperature(40);
+		//blink_leds();
 	}
 }
 

@@ -7,9 +7,14 @@
 
 #define _EMERGENCY_TEMP 60
 
+// Convert Clock Cycles to time
 #define US_TO_CLOCK_TICKS 28ul // 6 clock cyles in each cycle of the loop and 28*6 == 168
 #define MS_TO_CLOCK_TICKS US_TO_CLOCK_TICKS*1000ul
 
+// Parameters for Motor Movement
+#define ZERO_DEGREES 900.0f
+#define MAX_DEGREES 2800.0f
+#define DELTA MAX_DEGREES-ZERO_DEGREES
 
 /*!
 	Sets up the PWM using system calls. 
@@ -44,22 +49,31 @@ int display_setup()
  */
 int show_temperature(float temperature) 
 {
-	int delay = 5;
-	
+	// figure out how long to keep pulse high
+	int delay = ZERO_DEGREES + (int)(((DELTA) / 100.0f) * temperature);
 	GPIO_SetBits(GPIOB, GPIO_Pin_1);
-	for (int i=0; i <delay*MS_TO_CLOCK_TICKS; i++);	// wait for delay ms
+	// keep on for delay ms
+	for (int i=0; i <delay*US_TO_CLOCK_TICKS; i++);	// wait for delay ms
 	GPIO_ResetBits(GPIOB, GPIO_Pin_1);
 	return 0;
 }
 
+/*!
+	rotates through the four LEDS, while the temperature is too high
+	
+	@return number of cycles that the board was overheating
+ */
 uint32_t blink_leds()
 {
 	uint32_t cnt = 0;
 	while (1)
 	{
 		if(get_temperature(0) > _EMERGENCY_TEMP) {
+			// led on
 			GPIO_SetBits(GPIOD, GPIO_Pin_12);
+			// keep led on for 1 sec
 			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
+			// led off
 			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
 			cnt++;
 		}
