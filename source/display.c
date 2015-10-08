@@ -6,7 +6,9 @@
 #include "temperature.h"
 
 #define _EMERGENCY_TEMP 60
-#define MS_TO_CLOCK_TICKS 50*1000
+
+#define US_TO_CLOCK_TICKS 28ul // 6 clock cyles in each cycle of the loop and 28*6 == 168
+#define MS_TO_CLOCK_TICKS US_TO_CLOCK_TICKS*1000ul
 
 
 /*!
@@ -17,7 +19,7 @@ int display_setup()
 	GPIO_InitTypeDef gpio_init_s; // Structure to initilize definitions of GPIO
 	GPIO_StructInit(&gpio_init_s); // Fills each GPIO_InitStruct member with its default value
 
-	//RCC_AHB1PeriphClockCmd (RCC_AHB1Periph_GPIOB, ENABLE); // Provides power for motor
+	RCC_AHB1PeriphClockCmd (RCC_AHB1Periph_GPIOB, ENABLE); // Provides power for motor
 	RCC_AHB1PeriphClockCmd (RCC_AHB1Periph_GPIOD, ENABLE); // Provides power for LEDs
 
 	gpio_init_s.GPIO_Mode = GPIO_Mode_OUT; 			// Set as Output
@@ -42,12 +44,14 @@ int display_setup()
  */
 int show_temperature(float temperature) 
 {
+	int delay = 5;
+	
+	GPIO_SetBits(GPIOB, GPIO_Pin_1);
+	for (int i=0; i <delay*MS_TO_CLOCK_TICKS; i++);	// wait for delay ms
+	GPIO_ResetBits(GPIOB, GPIO_Pin_1);
 	return 0;
 }
 
-/*!
-	
- */
 uint32_t blink_leds()
 {
 	uint32_t cnt = 0;
@@ -55,7 +59,7 @@ uint32_t blink_leds()
 	{
 		if(get_temperature(0) > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_12);
-			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
 			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
 			cnt++;
 		}
@@ -63,7 +67,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature(0) > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_13);
-			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_13);
 			cnt++;
 		}
@@ -71,7 +75,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature(0) > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_14);
-			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
 			cnt++;
 		}
@@ -79,7 +83,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature(0) > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_15);
-			for(int i=0; i < 120*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_15);
 			cnt++;
 		}

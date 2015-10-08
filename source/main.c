@@ -21,12 +21,9 @@ int main()
 	{
 		while (!ticks);
 		ticks = 0;
-		if (cnt++ % 100 == 0)
-		{
-			blink_leds();
-		}
+		//show_temperature(40);
+		blink_leds();
 	}
-	return 0;
 }
 
 void SysTick_Handler()
