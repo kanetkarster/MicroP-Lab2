@@ -37,13 +37,14 @@ int temperature_setup()
 float get_temperature()
 {
 	
-	//scaling factor .000732
 	
 	ADC_SoftwareStartConv(ADC1);													//start conversion of temp
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);	//Wait for converion to finish
 
-	float Temp_mV = ADC_GetConversionValue(ADC1);					//Returns the last ADC1 converted value
-	return Temp_mV;
+	uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
+	float out_temp;
+	c = voltage_to_celcius(temp_mV, &out_temp);
+	return out_temp;
 }
 
 /*!
@@ -52,7 +53,11 @@ float get_temperature()
 	@param temp output temperature in Celcius
 	@return 0 if successful, -1 on failure
  */
-int voltage_to_celcius(float voltage, float* ouput)
+int voltage_to_celcius(uint16_t voltage, float* ouput)
 {
+	//scaling factor .000732 ~ 760/1038
+	
+	
+	
 	return 0;
 }
