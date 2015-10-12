@@ -1,6 +1,5 @@
-// temperature.h
-
-float get_temperature(int HIGH);
+// temperature.
+#include <stdint.h>
 
 /*!
 	Sets up the Temperature Sensor and ADC using system calls.
@@ -10,15 +9,7 @@ float get_temperature(int HIGH);
 int temperature_setup(void);
 
 /*!
-	Filters temperature reading for noise
-	TODO
- */
-int filter(void);
-
-/*!
-	Converts a voltage to Degrees Celcius
-	@param voltage input voltage, from temperature sensor
-	@param temp output temperature in Celcius
-	@return 0 if successful, -1 on failure
- */
-int voltage_to_celcius(float voltage, float* ouput);
+	Gets the temparture sensor value
+	@return Temp Value in  Celcius
+*/
+float get_temperature(void);

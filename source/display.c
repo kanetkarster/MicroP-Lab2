@@ -68,7 +68,7 @@ uint32_t blink_leds()
 	uint32_t cnt = 0;
 	while (1)
 	{
-		if(get_temperature(0) > _EMERGENCY_TEMP) {
+		if(get_temperature() > _EMERGENCY_TEMP) {
 			// led on
 			GPIO_SetBits(GPIOD, GPIO_Pin_12);
 			// keep led on for 1 sec
@@ -79,7 +79,7 @@ uint32_t blink_leds()
 		}
 		else return cnt;
 		
-		if(get_temperature(0) > _EMERGENCY_TEMP) {
+		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_13);
 			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_13);
@@ -87,7 +87,7 @@ uint32_t blink_leds()
 		}
 		else return cnt;
 		
-		if(get_temperature(0) > _EMERGENCY_TEMP) {
+		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_14);
 			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
@@ -95,7 +95,7 @@ uint32_t blink_leds()
 		}
 		else return cnt;
 		
-		if(get_temperature(0) > _EMERGENCY_TEMP) {
+		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_15);
 			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_15);
