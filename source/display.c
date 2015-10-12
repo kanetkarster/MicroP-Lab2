@@ -16,6 +16,8 @@
 #define MAX_DEGREES 2800.0f
 #define DELTA MAX_DEGREES-ZERO_DEGREES
 
+uint32_t cnt = 0;
+uint16_t PINS[4] = {GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
 /*!
 	Sets up the PWM using system calls. 
  */
@@ -61,46 +63,19 @@ int show_temperature(float temperature)
 /*!
 	rotates through the four LEDS, while the temperature is too high
 	
-	@return number of cycles that the board was overheating
+	@return 1 if alarm went off, else 0
  */
 uint32_t blink_leds()
 {
-	uint32_t cnt = 0;
-	while (1)
-	{
 		if(get_temperature() > _EMERGENCY_TEMP) {
 			// led on
-			GPIO_SetBits(GPIOD, GPIO_Pin_12);
+			GPIO_SetBits(GPIOD, PINS[cnt%4]);
 			// keep led on for 1 sec
 			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
 			// led off
-			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+			GPIO_ResetBits(GPIOD, PINS[cnt%4]);
 			cnt++;
+			return 1;
 		}
-		else return cnt;
-		
-		if(get_temperature() > _EMERGENCY_TEMP) {
-			GPIO_SetBits(GPIOD, GPIO_Pin_13);
-			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
-			GPIO_ResetBits(GPIOD, GPIO_Pin_13);
-			cnt++;
-		}
-		else return cnt;
-		
-		if(get_temperature() > _EMERGENCY_TEMP) {
-			GPIO_SetBits(GPIOD, GPIO_Pin_14);
-			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
-			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-			cnt++;
-		}
-		else return cnt;
-		
-		if(get_temperature() > _EMERGENCY_TEMP) {
-			GPIO_SetBits(GPIOD, GPIO_Pin_15);
-			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
-			GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-			cnt++;
-		}
-		else return cnt;
-	}
+		return 0;
 }

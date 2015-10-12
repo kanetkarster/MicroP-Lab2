@@ -17,6 +17,6 @@ int display_setup(void);
 /*!
 	rotates through the four LEDS, while the temperature is too high
 	
-	@return number of cycles that the board was overheating
+	@return 1 if alarm went off, else 0
  */
 uint32_t blink_leds(void);
