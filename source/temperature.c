@@ -1,11 +1,12 @@
-#include "temperature.h"
 #include <stdio.h>
 #include "stm32f4xx.h"                  					// Device header
 #include "stm32f4xx_conf.h"
 #include "stm32f4xx.h"
 #include <stdint.h>
 
-#define BUFF_SIZE 10
+#include "temperature.h"
+
+#define BUFF_SIZE 30
 
 
 typedef struct{
@@ -18,6 +19,7 @@ typedef struct{
 FilterBuffer new_filter;
 
 
+float out_mid;
 
 int voltage_to_celcius(uint16_t voltage, float* ouput);
 int filter(FilterBuffer *inout, float temp);
@@ -62,9 +64,8 @@ float get_temperature()
 	
 	ADC_SoftwareStartConv(ADC1);													//start conversion of temp
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);	//Wait for converion to finish
-
-	uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
 	float out_temp;
+	uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
 	int c = voltage_to_celcius(temp_mV, &out_temp);
 	int s = filter(&new_filter, out_temp);
 	return new_filter.avg;
@@ -78,7 +79,7 @@ float get_temperature()
  */
 int voltage_to_celcius(uint16_t voltage, float* output)
 {
-	printf("voltage = %hu\n", voltage);
+	//printf("voltage = %hu\n", voltage);
 //	//scaling factor .732 ~ 760/1038
 //	float scaling_f = .732f; 	//mV/mV
 //	printf("scaling_f = %f\n", scaling_f);
@@ -90,13 +91,13 @@ int voltage_to_celcius(uint16_t voltage, float* output)
 //	printf("val = %f\n", val);
 	
 	float max = 4095.0f;
-	printf("max = %f\n", max);
+	//printf("max = %f\n", max);
 	float val2 = ((float)(voltage)/max) *3.0f;
-	printf("val2 = %f\n", val2);
-	float val = (val2*1000.0f - 760.0f)/2.5f + 25.0f;
+	//printf("val2 = %f\n", val2);
+	out_mid = (val2*1000.0f - 760.0f)/2.5f + 25.0f;
 	
-	*output = val;
-	printf("output = %f\n", *(output));
+	*output = out_mid;
+	//printf("%f\t", *(output));
 
 	return 0;
 }

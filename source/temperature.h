@@ -1,5 +1,7 @@
+#ifndef TEMPERATURE_H
+#define TEMPERATURE_H
 #include <stdint.h>
-
+extern float out_mid;
 /*!
 	Sets up the Temperature Sensor and ADC using system calls.
 	
@@ -14,5 +16,4 @@ int temperature_setup(void);
 
 float get_temperature(void);
 
-
-
+#endif
