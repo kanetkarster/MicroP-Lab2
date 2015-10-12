@@ -14,15 +14,22 @@ uint32_t ticks = 0;
  */
 int main()
 {
-	// temperature_setup();
+	float temp;
+	
+	// setup
+	temperature_setup();
 	display_setup();
 	SysTick_Config(SystemCoreClock / 50);
+	
+	// super loop
 	while(1)
 	{
 		while (!ticks);
 		ticks = 0;
-		show_temperature(40);
-		//blink_leds();
+		temp = get_temperature();
+		printf("%f\n", temp);
+		show_temperature(temp);
+		blink_leds();
 	}
 }
 
