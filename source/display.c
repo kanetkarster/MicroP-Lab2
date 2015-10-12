@@ -5,7 +5,7 @@
 #include "display.h"
 #include "temperature.h"
 
-#define _EMERGENCY_TEMP 60
+#define _EMERGENCY_TEMP 50
 
 // Convert Clock Cycles to time
 #define US_TO_CLOCK_TICKS 28ul // 6 clock cyles in each cycle of the loop and 28*6 == 168
@@ -50,7 +50,7 @@ int display_setup()
 int show_temperature(float temperature) 
 {
 	// figure out how long to keep pulse high
-	int delay = ZERO_DEGREES + (int)(((DELTA) / 100.0f) * temperature);
+	int delay = ZERO_DEGREES + (int)(((DELTA) / 60.0f) * temperature);
 	GPIO_SetBits(GPIOB, GPIO_Pin_1);
 	// keep on for delay ms
 	for (int i=0; i <delay*US_TO_CLOCK_TICKS; i++);	// wait for delay ms
@@ -72,7 +72,7 @@ uint32_t blink_leds()
 			// led on
 			GPIO_SetBits(GPIOD, GPIO_Pin_12);
 			// keep led on for 1 sec
-			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
+			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
 			// led off
 			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
 			cnt++;
@@ -81,7 +81,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_13);
-			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_13);
 			cnt++;
 		}
@@ -89,7 +89,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_14);
-			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
 			cnt++;
 		}
@@ -97,7 +97,7 @@ uint32_t blink_leds()
 		
 		if(get_temperature() > _EMERGENCY_TEMP) {
 			GPIO_SetBits(GPIOD, GPIO_Pin_15);
-			for(uint32_t i=0; i < 1000*MS_TO_CLOCK_TICKS; i++);
+			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);
 			GPIO_ResetBits(GPIOD, GPIO_Pin_15);
 			cnt++;
 		}
