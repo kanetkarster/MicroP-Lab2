@@ -1,0 +1,29 @@
+output with a buffersize of 10:
+
+mean = -.1066
+
+std = 1.4504
+
+output with a buffersize of 15:
+
+mean = -.1080
+
+std = 1.4345
+
+output with a buffersize of 20:
+
+mean = -.1094
+
+std = 1.4584
+
+output with a buffersize of 25:
+
+mean = -.1708
+
+std = 1.4470
+
+output with a buffersize of 30:
+
+mean = -.0917
+
+std = 1.4435

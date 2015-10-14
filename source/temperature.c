@@ -9,6 +9,7 @@
 #define BUFF_SIZE 30
 
 
+
 typedef struct{
 	float buffer[BUFF_SIZE];
 	int replace;
@@ -20,7 +21,7 @@ FilterBuffer new_filter;
 
 
 float out_mid;
-
+float count = 0.0f;
 int voltage_to_celcius(uint16_t voltage, float* ouput);
 int filter(FilterBuffer *inout, float temp);
 
@@ -60,14 +61,14 @@ int temperature_setup()
 
 float get_temperature()
 {
-	
-	
-	ADC_SoftwareStartConv(ADC1);													//start conversion of temp
-	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);	//Wait for converion to finish
-	float out_temp;
-	uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
-	int c = voltage_to_celcius(temp_mV, &out_temp);
-	int s = filter(&new_filter, out_temp);
+	count = count < 11.0f ? count += 1.0f : 0.0f;
+	out_mid = 30.0f + count;
+	//ADC_SoftwareStartConv(ADC1);													//start conversion of temp
+	//while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);	//Wait for converion to finish
+	//float out_temp;
+	//uint16_t temp_mV = ADC_GetConversionValue(ADC1);	//Returns the last ADC1 converted value
+	//int c = voltage_to_celcius(temp_mV, &out_temp);
+	int s = filter(&new_filter, out_mid);
 	return new_filter.avg;
 }
 

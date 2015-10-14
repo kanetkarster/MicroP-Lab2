@@ -1,6 +1,6 @@
 windowSize = 10;
-ourVal = csvread('out15.txt', 0 ,1 , [0 1 1400 1]);
-measurements = csvread('out15.txt', 0, 0, [0 0 1400 0]);
+ourVal = csvread('out30.txt', 0 ,1 , [0 1 1400 1]);
+measurements = csvread('out30.txt', 0, 0, [0 0 1400 0]);
 
 filterEq = (1/windowSize)*ones(1,windowSize);
 
