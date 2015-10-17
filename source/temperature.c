@@ -6,7 +6,7 @@
 #include "stm32f4xx.h"
 #include <stdint.h>
 
-#define BUFF_SIZE 10
+#define BUFF_SIZE 30
 
 
 typedef struct{
@@ -18,7 +18,10 @@ typedef struct{
 
 FilterBuffer new_filter;
 
-
+const float to_mV = 1000.0f;
+const float mV_25 = 760.0f;
+const float slope = 2.5f;
+const float max = 4095.0f;
 
 int voltage_to_celcius(uint16_t voltage, float* ouput);
 int filter(FilterBuffer *inout, float temp);
@@ -48,7 +51,6 @@ int temperature_setup()
 	ADC_TempSensorVrefintCmd(ENABLE);											//wake up desired sensor (temp)
 	ADC_Cmd(ADC1, ENABLE);																//turn on the ADC1 peripheral
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_480Cycles);	//Configures ADC1_channel 16 which is the tempature sensor
-	//ADC_RegularChannelConfig(ADC1, , 1, ADC_SampleTime_480Cycles);
 	ADC_Init(ADC1, &adc_init_s);													//initialize ADC1
 	
 
@@ -74,37 +76,23 @@ float get_temperature()
 /*!
 	Converts a voltage to Degrees Celcius
 	@param voltage input voltage, from temperature sensor
-	@param temp output temperature in Celcius
+	@param output temperature in Celcius
 	@return 0 if successful, -1 on failure
  */
 int voltage_to_celcius(uint16_t voltage, float* output)
 {
-	printf("voltage = %hu\n", voltage);
-//	//scaling factor .732 ~ 760/1038
-//	float scaling_f = .732f; 	//mV/mV
-//	printf("scaling_f = %f\n", scaling_f);
-//	float	V_25 = 760.0f;					//mV
-//	printf("V_25 = %f\n", V_25);
-//	float avg_slope	 = 2.5f;		//mV/degC
-//	printf("avg_slope = %f\n", avg_slope);
-//	float val = (scaling_f*(float)(voltage) - V_25)/avg_slope + 25.0f;
-//	printf("val = %f\n", val);
-	
-	float max = 4095.0f;
-	printf("max = %f\n", max);
 	float val2 = ((float)(voltage)/max) *3.0f;
-	printf("val2 = %f\n", val2);
-	float val = (val2*1000.0f - 760.0f)/2.5f + 25.0f;
-	
+	float val = (val2*to_mV - mV_25)/slope + 25.0f;
 	*output = val;
-	printf("output = %f\n", *(output));
 
 	return 0;
 }
 
 /*!
 	Filters temperature reading for noise
-	@TODO
+	@param *inout pointer to filter
+	@param temp value to filter
+	@return 0 on completion
  */
 int filter(FilterBuffer *inout, float temp)
 {
