@@ -12,8 +12,8 @@
 #define MS_TO_CLOCK_TICKS US_TO_CLOCK_TICKS*1000ul
 
 // Parameters for Motor Movement
-#define ZERO_DEGREES 900.0f
-#define MAX_DEGREES 2800.0f
+#define ZERO_DEGREES 700.0f
+#define MAX_DEGREES 2900.0f
 #define DELTA MAX_DEGREES-ZERO_DEGREES
 
 uint32_t cnt = 0;
@@ -52,7 +52,9 @@ int display_setup()
 int show_temperature(float temperature) 
 {
 	// figure out how long to keep pulse high
-	int delay = ZERO_DEGREES + (int)(((DELTA) / 60.0f) * temperature);
+	if (temperature > 60) temperature = 60.0f;
+	if (temperature < 20) temperature = 20.0f;
+	int delay = ZERO_DEGREES + (int)(((DELTA) / 40.0f) * (temperature - 20));
 	GPIO_SetBits(GPIOB, GPIO_Pin_1);
 	// keep on for delay ms
 	for (int i=0; i <delay*US_TO_CLOCK_TICKS; i++);	// wait for delay ms
@@ -70,8 +72,8 @@ uint32_t blink_leds()
 		if(get_temperature() > _EMERGENCY_TEMP) {
 			// led on
 			GPIO_SetBits(GPIOD, PINS[cnt%4]);
-			// keep led on for 1 sec
-			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);	// wait 1000 ms
+			// keep led on for .1 sec
+			for(uint32_t i=0; i < 100*MS_TO_CLOCK_TICKS; i++);	// wait 100 ms
 			// led off
 			GPIO_ResetBits(GPIOD, PINS[cnt%4]);
 			cnt++;
